@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Complex Marker Icons</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <style type="text/css">
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+
+      /* Optional: Makes the sample page fill the window. */
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+    <script>
+
+	 function getQueryVariable(variable) {
+        // Estoy asumiendo que query es window.location.search.substring(1);
+        //var query = "product_id=32&cat_id=1&sessionid=123";
+        var query = window.location.search.substring(1);
+        var vars = query.split("&");
+        for (var i=0; i < vars.length; i++) {
+            var pair = vars[i].split("="); 
+            if (pair[0] == variable) {
+                return pair[1];
+             }
+          }
+         return false;
+       }
+	    
+        //const latitud = getQueryVariable("lat");
+	//const longitud = getQueryVariable("lng");
+	//parseFloat(latitud)
+       const Key =  getQueryVariable("key");
+	   const Clientes =  getQueryVariable("Clientes");
+	    
+		
+	   function loadScript() {
+        var script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = 'https://maps.googleapis.com/maps/api/js?key='+ Key +'&libraries=&v=weekly&callback=initMap';
+        document.body.appendChild(script);
+    }
+	    
+	    function loadScriptDev() {
+        var script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = 'https://maps.googleapis.com/maps/api/js?v=3'+'&signed_in=true&callback=initMap';
+        document.body.appendChild(script);
+    }
+	    
+       
+      // The following example creates complex markers to indicate beaches near
+      // Sydney, NSW, Australia. Note that the anchor is set to (0,32) to correspond
+      // to the base of the flagpole.
+      function initMap() {
+        const map = new google.maps.Map(document.getElementById("map"), {
+          zoom: 10,
+          center: { lat: parseFloat(getQueryVariable("lat")), lng: parseFloat(getQueryVariable("lon")) },
+        });
+	
+	  const marker = new google.maps.Marker({
+          position: { lat: parseFloat(getQueryVariable("lat")), lng: parseFloat(getQueryVariable("lon")) },
+          map: map,
+        });
+	      
+        setMarkers(map);
+      }
+      // Data for the markers consisting of a name, a LatLng and a zIndex for the
+      // order in which these markers should display on top of each other.
+      const beaches = Clientes;
+	
+
+      function setMarkers(map) {
+        // Adds markers to the map.
+        // Marker sizes are expressed as a Size of X,Y where the origin of the image
+        // (0,0) is located in the top left of the image.
+        // Origins, anchor positions and coordinates of the marker increase in the X
+        // direction to the right and in the Y direction down.
+        const imageBuca = {
+          url:
+	  "https://oliveros23.github.io/mapsBucanero/Logos-01.png",
+           // "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png",
+          // This marker is 20 pixels wide by 32 pixels high.
+         //size: new google.maps.Size(20, 32),
+	  size: new google.maps.Size(48, 48),
+          // The origin for this image is (0, 0).
+          origin: new google.maps.Point(0, 0),
+          // The anchor for this image is the base of the flagpole at (0, 32).
+          // anchor: new google.maps.Point(0, 32),
+	  anchor: new google.maps.Point(0, 48),
+        };
+	      
+	const imageCamp = {
+          url:
+	  "https://oliveros23.github.io/mapsBucanero/Logos-02.png",
+           // "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png",
+          // This marker is 20 pixels wide by 32 pixels high.
+         //size: new google.maps.Size(20, 32),
+	  size: new google.maps.Size(48, 48),
+          // The origin for this image is (0, 0).
+          origin: new google.maps.Point(0, 0),
+          // The anchor for this image is the base of the flagpole at (0, 32).
+          // anchor: new google.maps.Point(0, 32),
+	  anchor: new google.maps.Point(0, 48),
+        };      
+        // Shapes define the clickable region of the icon. The type defines an HTML
+        // <area> element 'poly' which traces out a polygon as a series of X,Y points.
+        // The final coordinate closes the poly by connecting to the first coordinate.
+	// coords: [1, 1, 1, 20, 18, 20, 18, 1],
+        const shape = {
+          coords: [1, 1, 1, 48, 38, 48, 38, 1],
+          type: "poly",
+        };
+
+        for (let i = 0; i < beaches.length; i++) {
+          const beach = beaches[i];
+		
+		 const contentString =
+    		'<div id="content">' +
+    		'<div id="siteNotice">' +
+    		'</div>' +
+    		'<h1 id="firstHeading" class="firstHeading">' + beach[0] + '</h1>' +
+    		'<div id="bodyContent">' +
+    		'<p><b>' + beach[4] + '</b>, Bodega de Despacho .</p>' +
+    		'</div>' +
+    		'</div>';
+		
+		const  infowindow = new google.maps.InfoWindow({
+    		content: contentString,
+  		});
+		
+	 	var Image;
+		switch(beach[4]) {
+  			case "Bucanero":
+    			Image = imageBuca;
+    			break;
+  			case "Campollo":
+    			Image = imageCamp;
+    			break;
+  			default:
+    			Image = imageBuca;
+			}
+      const marker =  new google.maps.Marker({
+            position: { lat: beach[1], lng: beach[2] },
+            	map,
+	 	icon: Image,
+             	shape: shape,
+            	title: beach[0],
+            	zIndex: beach[3],
+          });
+		
+	marker.addListener("click", () => {
+    	infowindow.open(map, marker);
+  	});
+		
+        }
+      }
+	    
+	if (getQueryVariable("Entorno") == "P") {
+	 window.onload = loadScript;
+	} else {
+ 	 window.onload = loadScriptDev;
+	}    
+    //window.onload = loadScript;
+    //window.onload = loadScriptDev;
+    </script>
+  </head>
+  <body>
+    <div id="map"></div>
+  </body>
+</html>
