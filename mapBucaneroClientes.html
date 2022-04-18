@@ -39,6 +39,7 @@
 	//parseFloat(latitud)
        const Key =  getQueryVariable("key");
        const Clientes =  getQueryVariable("Clientes");
+       const ClientesJson = JSON.parse(Clientes);
        
 	    
 		
@@ -75,7 +76,7 @@
       }
       // Data for the markers consisting of a name, a LatLng and a zIndex for the
       // order in which these markers should display on top of each other.
-      const ClientesJson = JSON.parse(Clientes);
+      
       const beaches = ClientesJson;
 	
 
