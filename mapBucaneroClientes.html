@@ -38,7 +38,8 @@
 	//const longitud = getQueryVariable("lng");
 	//parseFloat(latitud)
        const Key =  getQueryVariable("key");
-	   const Clientes =  getQueryVariable("Clientes");
+       const Clientes =  JSON.parse(getQueryVariable("Clientes"));
+       
 	    
 		
 	   function loadScript() {
